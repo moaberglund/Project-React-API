@@ -21,8 +21,7 @@ const ReviewShema = new mongoose.Schema({
         max: 500
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        type: String,
         required: true
     },
     book_id: {
