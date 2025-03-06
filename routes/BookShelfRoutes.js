@@ -4,7 +4,7 @@ const { addBookToShelf, updateBookStatus, removeBookFromShelf } = require('../co
 const auth = require('../middleware/auth');
 
 router.post('/', auth, addBookToShelf);  
-router.put('/:id', auth, updateBookStatus); 
-router.delete('/:id', auth, removeBookFromShelf); 
+router.put('/:book_id', auth, updateBookStatus); 
+router.delete('/:book_id', auth, removeBookFromShelf); 
 
 module.exports = router;
