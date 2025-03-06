@@ -7,6 +7,7 @@ require('dotenv').config();
 // import Routes
 const userRoutes = require('./routes/UserRoutes');
 const reviewRoutes = require('./routes/ReviewRoutes');
+const likeRoutes = require('./routes/LikeRoutes');
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -23,6 +24,7 @@ app.listen(port, () => {
 // Routes
 app.use('/user', userRoutes);
 app.use('/review', reviewRoutes);
+app.use('/like', likeRoutes);
 
 // Connect to DB
 mongoose.set("strictQuery", false);
