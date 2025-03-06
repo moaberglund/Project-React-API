@@ -7,13 +7,12 @@ const BookShelfSchema = new mongoose.Schema({
         required: true
     },
     book_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Book',  
+        type: String,  
         required: true
     },
     status: {
         type: String,
-        enum: ['Want to Read', 'Currently Reading', 'Read'],
+        enum: ['want to read', 'currently reading', 'read'],
         default: 'want to read',  // Standard
         required: true
     }
