@@ -21,15 +21,19 @@ const ReviewShema = new mongoose.Schema({
         max: 500
     },
     user: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     book_id: {
         type: String,
         required: true
+    },
+    likes: {
+        type: Number,
+        default: 0
     }
-}, 
-{ timestamps: true }); //createdAt + updatedAt
+},
+    { timestamps: true }); //createdAt + updatedAt
 
 const Review = mongoose.model('Review', ReviewShema);
 module.exports = Review;
