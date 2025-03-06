@@ -8,6 +8,7 @@ require('dotenv').config();
 const userRoutes = require('./routes/UserRoutes');
 const reviewRoutes = require('./routes/ReviewRoutes');
 const likeRoutes = require('./routes/LikeRoutes');
+const bookshelfRoutes = require('./routes/BookShelfRoutes');
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -25,6 +26,7 @@ app.listen(port, () => {
 app.use('/user', userRoutes);
 app.use('/review', reviewRoutes);
 app.use('/like', likeRoutes);
+app.use('/bookshelf', bookshelfRoutes);
 
 // Connect to DB
 mongoose.set("strictQuery", false);
