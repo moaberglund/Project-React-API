@@ -1,5 +1,23 @@
 const BookShelf = require('../models/BookShelfModel');
 
+// Hämta alla böcker i bokhyllan för en användare
+exports.getBooksFromShelf = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        // Hämta böcker från bokhyllan
+        const booksInShelf = await BookShelf.find({ user: userId });
+
+        if (booksInShelf.length === 0) {
+            return res.status(404).json({ message: "No books found in your bookshelf!" });
+        }
+
+        res.json({ books: booksInShelf });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
 // Add a book to the bookshelf
 exports.addBookToShelf = async (req, res) => {
     try {
