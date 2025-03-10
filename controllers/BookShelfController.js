@@ -1,11 +1,11 @@
 const BookShelf = require('../models/BookShelfModel');
 
-// Hämta alla böcker i bokhyllan för en användare
+// Get all books in a user's bookshelf
 exports.getBooksFromShelf = async (req, res) => {
     try {
         const userId = req.user._id;
 
-        // Hämta böcker från bokhyllan
+        // Get books
         const booksInShelf = await BookShelf.find({ user: userId });
 
         if (booksInShelf.length === 0) {
@@ -17,6 +17,26 @@ exports.getBooksFromShelf = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+exports.getBookStatusFromShelf = async (req, res) => {
+    try {
+        const userId = req.user._id; // Get user ID from the token
+        const bookId = req.params.book_id; // Get book ID from the URL
+
+        // Find the book in the bookshelf of the user
+        const bookInShelf = await BookShelf.findOne({ user: userId, book_id: bookId });
+
+        if (!bookInShelf) {
+            return res.status(404).json({ message: "This book is not in your bookshelf!" });
+        }
+
+        // Return status of the book
+        res.json({ status: bookInShelf.status });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
 
 // Add a book to the bookshelf
 exports.addBookToShelf = async (req, res) => {
