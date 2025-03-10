@@ -40,14 +40,19 @@ exports.login = async (req, res) => {
 
         // Create JWT token
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: "12h" });
-        res.json({ token });
 
-        return user;
+        // Convert user to object and remove password
+        const userData = user.toObject();
+        delete userData.password;
+
+        // Send response with token and user object
+        res.json({ token, user: userData });
 
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 };
+
 
 // Get user profile (protected route)
 exports.getProfile = async (req, res) => {
