@@ -67,8 +67,6 @@ exports.getProfile = async (req, res) => {
     }
 };
 
-const User = require("../models/User");
-
 // NEW getuserbyID route (problem with route above)
 exports.getUserById = async (req, res) => {
     try {
