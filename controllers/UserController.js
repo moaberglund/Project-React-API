@@ -67,17 +67,39 @@ exports.getProfile = async (req, res) => {
     }
 };
 
+const User = require("../models/User");
+
+// NEW getuserbyID route (problem with route above)
+exports.getUserById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        console.log("Fetching user with ID:", id);
+
+        const user = await User.findById(id).select("-password");
+        if (!user) {
+            return res.status(404).json({ message: "User not found!" });
+        }
+
+        res.json(user);
+    } catch (err) {
+        console.error("Error fetching user:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+
 // Update user profile (protected route)
 exports.updateProfile = async (req, res) => {
     try {
         const { username, email, firstname, lastname, age } = req.body;
-        
+
         // Controll if the user wants to update the username
         if (username) {
             // Check if username already exists and not belongs to other user
-            const existingUser = await User.findOne({ 
-                username, 
-                _id: { $ne: req.user.userId } 
+            const existingUser = await User.findOne({
+                username,
+                _id: { $ne: req.user.userId }
             });
             if (existingUser) {
                 return res.status(400).json({ message: "Username already taken!" });
@@ -96,7 +118,7 @@ exports.updateProfile = async (req, res) => {
                     ...(age && { age })
                 }
             },
-            { 
+            {
                 new: true, // Return user
                 runValidators: true, // Run model validations
                 select: '-password' // Exclude password from result
@@ -123,9 +145,9 @@ exports.updateProfile = async (req, res) => {
 exports.deleteProfile = async (req, res) => {
     try {
         const { password } = req.body;
-        
+
         const user = await User.findById(req.user.userId);
-        
+
         if (!user) {
             return res.status(404).json({ message: "User not found!" });
         }
@@ -138,8 +160,8 @@ exports.deleteProfile = async (req, res) => {
 
         await user.deleteOne();
 
-        res.json({ 
-            message: "Account deleted successfully" 
+        res.json({
+            message: "Account deleted successfully"
         });
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -151,27 +173,27 @@ exports.deleteProfile = async (req, res) => {
 exports.validateToken = async (req, res) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
-        
+
         if (!token) {
-            return res.status(401).json({ 
-                valid: false, 
-                message: "Missing token" 
+            return res.status(401).json({
+                valid: false,
+                message: "Missing token"
             });
         }
 
         // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-        
+
         // Controll user exists
         const user = await User.findById(decoded.userId).select("-password");
         if (!user) {
-            return res.status(401).json({ 
-                valid: false, 
-                message: "No user found" 
+            return res.status(401).json({
+                valid: false,
+                message: "No user found"
             });
         }
 
-        return res.json({ 
+        return res.json({
             valid: true,
             user: user,
             message: "Valid token"
@@ -179,20 +201,20 @@ exports.validateToken = async (req, res) => {
 
     } catch (err) {
         if (err.name === 'JsonWebTokenError') {
-            return res.status(401).json({ 
-                valid: false, 
-                message: "Not valid token" 
+            return res.status(401).json({
+                valid: false,
+                message: "Not valid token"
             });
         }
         if (err.name === 'TokenExpiredError') {
-            return res.status(401).json({ 
-                valid: false, 
-                message: "Token has expired" 
+            return res.status(401).json({
+                valid: false,
+                message: "Token has expired"
             });
         }
-        return res.status(500).json({ 
-            valid: false, 
-            message: "Server error" 
+        return res.status(500).json({
+            valid: false,
+            message: "Server error"
         });
     }
 };
