@@ -46,6 +46,22 @@ exports.getReviews = async (req, res) => {
     }
 };
 
+exports.getReviewsByBook = async (req, res) => {
+    try {
+        const { bookId } = req.params;  // Hämta bookId från URL
+
+        const reviews = await Review.find({ book_id: bookId })  // Filtrera på book_id
+            .populate("user", "username firstname lastname") // Hämta användarinformation
+            .sort({ created_at: -1 }); // Sortera senaste först
+
+        res.json(reviews);
+    } catch (err) {
+        console.error("Error fetching reviews:", err);
+        res.status(500).json({ message: err.message });
+    }
+};
+
+
 // Get one review by id
 exports.getReviewById = async (req, res) => {
     try {
