@@ -82,32 +82,48 @@ exports.getReviewById = async (req, res) => {
 exports.updateReview = async (req, res) => {
     try {
         const { rating, title, text } = req.body;
-        
-        let review = await Review.findById(req.params.id);
-        
+
+        // Controll to make sure user is logged in
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({ message: "Unauthorized: User not found" });
+        }
+
+        // Find review
+        const review = await Review.findById(req.params.id);
+
         if (!review) {
             return res.status(404).json({ message: "Review not found!" });
         }
 
-        // Convert both review.user and req.user._id to string before comparing
+        // Controll to make sure user is the creator of the review
         if (review.user.toString() !== req.user._id.toString()) {
             return res.status(403).json({ message: "Not authorized to update this review!" });
         }
 
-        // Uppdate fields
-        review.rating = rating ?? review.rating;
-        review.title = title ?? review.title;
-        review.text = text ?? review.text;
-        review.updated_at = Date.now();
+        // Validate that rating is between 1 and 5
+        if (rating !== undefined && (rating < 1 || rating > 5)) {
+            return res.status(400).json({ message: "Rating must be between 1 and 5" });
+        }
 
-        await review.save();
-        res.json({ message: "Review updated successfully!", review });
+        // Update
+        const updatedReview = await Review.findByIdAndUpdate(
+            req.params.id,
+            {
+                rating: rating ?? review.rating,
+                title: title ?? review.title,
+                text: text ?? review.text,
+                updated_at: Date.now()
+            },
+            { new: true } // Return the updated review
+        );
+
+        res.json({ message: "Review updated successfully!", review: updatedReview });
 
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        console.error("Error updating review:", err);
+        res.status(500).json({ message: "Something went wrong", error: err.message });
     }
 };
-
 
 
 // Delete a review (only the creator can delete)
