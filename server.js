@@ -14,7 +14,12 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+    origin: 'http://localhost:5173', // For dev, change to frontend-URL next
+    methods: ['GET', 'POST', 'DELETE', 'PUT'], 
+};
+app.use(cors(corsOptions)); 
+
 app.use(bodyParser.json());
 
 // Initilaize
