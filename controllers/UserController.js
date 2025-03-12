@@ -90,7 +90,7 @@ exports.getUserById = async (req, res) => {
 // Update user profile (protected route)
 exports.updateProfile = async (req, res) => {
     try {
-        const { username, email, firstname, lastname, age } = req.body;
+        const { username, email, firstname, lastname, city, country } = req.body;
 
         // Controll if the user wants to update the username
         if (username) {
@@ -113,7 +113,8 @@ exports.updateProfile = async (req, res) => {
                     ...(email && { email }),
                     ...(firstname && { firstname }),
                     ...(lastname && { lastname }),
-                    ...(age && { age })
+                    ...(city && { city }),
+                    ...(country && { country }),
                 }
             },
             {
