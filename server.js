@@ -15,7 +15,7 @@ const port = process.env.PORT || 8000;
 
 // Middleware
 const corsOptions = {
-    origin: 'https://read-y-red.vercel.app/', // frontend-URL atm
+    origin: 'https://read-y-red.vercel.app', // frontend-URL atm
     methods: ['GET', 'POST', 'DELETE', 'PUT'], 
 };
 app.use(cors(corsOptions)); 
