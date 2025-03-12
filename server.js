@@ -15,7 +15,7 @@ const port = process.env.PORT || 8000;
 
 // Middleware
 const corsOptions = {
-    origin: 'http://localhost:5173', // For dev, change to frontend-URL next
+    origin: 'http://localhost:5173' && 'https://read-y-red.vercel.app', // For dev, change to frontend-URL next
     methods: ['GET', 'POST', 'DELETE', 'PUT'], 
 };
 app.use(cors(corsOptions)); 
