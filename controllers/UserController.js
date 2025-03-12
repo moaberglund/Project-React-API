@@ -94,7 +94,7 @@ exports.updateProfile = async (req, res) => {
 
         // Find and update the user
         const updatedUser = await User.findByIdAndUpdate(
-            req.user.userId,
+            req.user._id,
             {
                 $set: {
                     ...(email && { email }),
