@@ -90,26 +90,13 @@ exports.getUserById = async (req, res) => {
 // Update user profile (protected route)
 exports.updateProfile = async (req, res) => {
     try {
-        const { username, email, firstname, lastname, city, country } = req.body;
-
-        // Controll if the user wants to update the username
-        if (username) {
-            // Check if username already exists and not belongs to other user
-            const existingUser = await User.findOne({
-                username,
-                _id: { $ne: req.user.userId }
-            });
-            if (existingUser) {
-                return res.status(400).json({ message: "Username already taken!" });
-            }
-        }
+        const { email, firstname, lastname, city, country } = req.body;
 
         // Find and update the user
         const updatedUser = await User.findByIdAndUpdate(
             req.user.userId,
             {
                 $set: {
-                    ...(username && { username }),
                     ...(email && { email }),
                     ...(firstname && { firstname }),
                     ...(lastname && { lastname }),
@@ -119,7 +106,6 @@ exports.updateProfile = async (req, res) => {
             },
             {
                 new: true, // Return user
-                runValidators: true, // Run model validations
                 select: '-password' // Exclude password from result
             }
         );
